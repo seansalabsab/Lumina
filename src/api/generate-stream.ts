@@ -14,7 +14,7 @@ export async function fetchGenerateCompletionStream (
 ) {
   // ensure the request is stream = true
   requestPayload.stream = true
-  const url = ApiEndpoints.GENERATE_STREAM
+  const url = ApiEndpoints.COMPLETION
   return apiClient.requestStream(
     url,
     "POST",
@@ -61,7 +61,7 @@ export async function fetchGenerateChatStream (
 ) {
   // ensure it is stream = true
   requestPayload.stream = true
-  const url = ApiEndpoints.GENERATE_CHAT_STREAM
+  const url = ApiEndpoints.CHAT
   return apiClient.requestStream(
     url,
     "POST",

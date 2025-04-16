@@ -1,8 +1,8 @@
 import {
   GenerateCompletionReq,
-  GenerateChatCompletionReq,
   GenerateCompletionRes,
-  GenerateChatCompletionRes,
+  GenerateChatReq,
+  GenerateChatRes,
   ApiEndpoints
 } from "@/api/types"
 import apiClient from "./api"
@@ -12,27 +12,27 @@ export async function fetchGenerateCompletion(
   onSuccess: (message: string) => void,
   onError: (err: any) => void
 ){
-  return apiClient.request<{data: GenerateCompletionRes}>(
-    ApiEndpoints.GENERATE,
+  return apiClient.request<GenerateCompletionRes>(
+    ApiEndpoints.COMPLETION,
     "POST",
     undefined,
     payload,
-    (data) => onSuccess(data.data.response),
+    (data) => onSuccess(data.response),
     (error) => onError(error),
   )
 }
 
 export async function fetchGenerateChat(
-  payload: GenerateChatCompletionReq,
+  payload: GenerateChatReq,
   onSuccess: (message: string) => void,
   onError: (err: any) => void
 ){
-  return apiClient.request<{data: GenerateChatCompletionRes}>(
-    ApiEndpoints.GENERATE_CHAT,
+  return apiClient.request<GenerateChatRes>(
+    ApiEndpoints.CHAT,
     "POST",
     undefined,
     payload,
-    (data) => onSuccess(data.data.message.content),
+    (data) => onSuccess(data.message.content),
     (error) => onError(error),
   )
 }
