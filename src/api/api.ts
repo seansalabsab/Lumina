@@ -2,7 +2,7 @@
 import {RequestMiddleware, ResponseMiddleware} from "@/api/types"
 import { RequestLogger, ResponseLogger } from "./middlewares";
 
-const API_BASE_URL = "http://localhost:8000";
+const API_BASE_URL = "http://localhost:11434";
 
 class ApiClient {
   private baseUrl:string;

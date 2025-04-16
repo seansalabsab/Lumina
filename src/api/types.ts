@@ -1,11 +1,9 @@
 
 export enum ApiEndpoints {
-  LIST_LOCAL_MODELS = "/list",
-  LIST_RUNNING_MODLES =  "/list-running",
-  GENERATE = "/generate",
-  GENERATE_CHAT = "/chat",
-  GENERATE_STREAM = "/generate-stream",
-  GENERATE_CHAT_STREAM = "/chat-stream",
+  LIST_LOCAL_MODELS = "/api/tags",
+  LIST_RUNNING_MODLES =  "/api/ps",
+  COMPLETION = "/api/generate",
+  CHAT = "/api/chat",
 }
 
 export type ApiResponse = {
