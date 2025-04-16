@@ -1,4 +1,4 @@
-FROM node:18-alpine
+FROM docker.arvancloud.ir/node:20-alpine
 
 WORKDIR /app
 
@@ -8,9 +8,11 @@ RUN npm install
 
 COPY . .
 
-EXPOSE 3000
+RUN npx vite build
 
-CMD ["npm", "run", "dev"]
+EXPOSE 4173
+
+CMD ["npx", "vite", "preview", "--host"]
 
 
 
