@@ -38,6 +38,14 @@ const Chat = () => {
     }
   },[id, navigate])
 
+  const messagesEndRef = React.useRef<HTMLDivElement>(null)
+  React.useEffect(() => {
+    if (messagesEndRef.current && currentConversation) {
+      messagesEndRef.current.scrollIntoView({behavior: "smooth"})
+    }
+  }, [currentConversation?.messages])
+
+
   React.useEffect(() => {
     if (id && !currentConversation) {
       navigate("/chat")
@@ -63,6 +71,7 @@ const Chat = () => {
       <Header />
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
         <ConversationView c={currentConversation} />
+        <div ref={messagesEndRef}></div>
       </div>
        
 

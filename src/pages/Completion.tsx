@@ -14,7 +14,7 @@ import { CornerDownLeft } from "lucide-react";
 import { Settings } from "lucide-react";
 import { Label } from "@/components/ui/label";
 const Completion = () => {
-  const [showAdvanced, setShowAdvanced] = React.useState<boolean>(true)
+  const [showAdvanced, setShowAdvanced] = React.useState<boolean>(false)
   const navigate = useNavigate()
   const { id } = useParams<{id:string}>()
   
@@ -51,6 +51,13 @@ const Completion = () => {
   },[id])
 
 
+  const messagesEndRef = React.useRef<HTMLDivElement>(null)
+  React.useEffect(() => {
+    if (messagesEndRef.current && currentConversation) {
+      messagesEndRef.current.scrollIntoView({behavior: "smooth"})
+    }
+  }, [currentConversation?.messages])
+
   const handleFormSubmit = (e:React.FormEvent) => {
     if (model){
       handleSubmit(e, model.name)
@@ -63,8 +70,9 @@ const Completion = () => {
   return (
     <div className="flex flex-col h-screen bg-gray-50">
       <Header />
-      <div className="flex-1 overflow-y-auto p-4 space-y-4">
+      <div className="flex-1 overflow-y-auto p-4 space-y-4 max-w-7xl">
         <ConversationView c={currentConversation} />
+        <div ref={messagesEndRef}></div>
       </div>
        
 
