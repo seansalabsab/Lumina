@@ -48,9 +48,7 @@ export const CompletionProvider: React.FC<{children:React.ReactNode}> = ({childr
   const [isLoading, setIsLoading] = React.useState<boolean>(false)
 
   React.useEffect(() => {
-    // filter new conversations that is not have any messages
-    const conversationsToSave  = conversations.filter((c:Conversation) => c.messages.length > 0)
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(conversationsToSave));
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(conversations));
   },[conversations])
 
   React.useEffect(() => {
@@ -119,8 +117,11 @@ export const CompletionProvider: React.FC<{children:React.ReactNode}> = ({childr
         updated_at: Date.now(),
       }
       setConversations((prev:Conversation[]) => [emptConv, ...prev])
-      setCurrentId(emptConv.id)
+    } else {
+      emptConv.updated_at = Date.now()
+      emptConv.created_at = Date.now()
     }
+    setCurrentId(emptConv.id)
     return emptConv.id
   }
 
