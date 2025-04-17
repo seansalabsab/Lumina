@@ -4,6 +4,7 @@ import remarkGfm from "remark-gfm";
 import {Prism as SyntaxHighlighter} from 'react-syntax-highlighter'
 import {atomDark} from 'react-syntax-highlighter/dist/esm/styles/prism'
 import { useSidebar } from "../ui/sidebar";
+import { logger } from "@/utils/logger";
 
 export const MarkdownWithCode = ({ text }: {text: string}) => {
   const {open} = useSidebar()
@@ -23,7 +24,7 @@ export const MarkdownWithCode = ({ text }: {text: string}) => {
             setCopied(true)
             setTimeout(() => setCopied(false), 1000)
           } catch (err){
-            console.error("Failed to copy!", err)
+            logger.error("Failed to copy!", err)
           }
         }
         return match ? (

@@ -1,4 +1,5 @@
 import React from "react";
+import { logger } from "@/utils/logger";
 
 type StorageType = "localstorage" | "sessionStorage"
 
@@ -15,7 +16,7 @@ export function usePersistentState<T>(
       const storedValue = storage.getItem(key);
       return storedValue ? JSON.parse(storedValue) : defaultValue;
     } catch (error) {
-      console.error(`Error loading ${key} from storage:`, error);
+      logger.error(`Error loading ${key} from storage:`, error);
       return defaultValue;
     } 
   })
@@ -25,7 +26,7 @@ export function usePersistentState<T>(
     try {
       storage.setItem(key, JSON.stringify(state))
     } catch (error) {
-      console.error(`Error saving ${key} to storage`, error)
+      logger.error(`Error saving ${key} to storage`, error)
     }
   },[key, state, storage]);
 

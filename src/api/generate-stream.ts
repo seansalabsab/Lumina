@@ -6,6 +6,7 @@ import {
   GenerateChatReq,
   GenerateChatRes,
 } from './types' 
+import { logger } from '@/utils/logger';
 
 export async function fetchGenerateCompletionStream (
   requestPayload: GenerateCompletionReq,
@@ -30,23 +31,17 @@ export async function fetchGenerateCompletionStream (
         }
 
         const jsonObject = trimmedChunk.split("\n");
-        jsonObject.forEach(element => {
+        for (const element of jsonObject) {
+          if (!element) continue;
           try {
-            const data = JSON.parse(element)
-            
-            if (data) {
-              onSuccess(data)
-            } else {
-              throw new Error("failed to parse element")
-            }
-
+            const data = JSON.parse(element);
+            onSuccess(data)
           } catch (parseError) {
-            console.warn("Skipping malformed JSON chunk: ", parseError ,element)
-            return
+            logger.warn("Skipping malformed JSON chunk: ", parseError, element)
           }
-        })
+        }
       } catch (error) {
-        console.error("Failed to process the chunk: ", error)
+        logger.error("Failed to process the chunk: ", error)
         onError(error)
       }
     },
@@ -75,25 +70,19 @@ export async function fetchGenerateChatStream (
         if (!trimmedChunk) {
           return;
         }
-
         const jsonObject = trimmedChunk.split("\n");
-        jsonObject.forEach(element => {
+        for (const element of jsonObject) {
+          if (!element) continue;
           try {
-            const data = JSON.parse(element)
-            
-            if (data) {
-              onSuccess(data)
-            } else {
-              throw new Error("failed to parse element")
-            }
-
+            const data = JSON.parse(element);
+            onSuccess(data)
           } catch (parseError) {
-            console.warn("Skipping malformed JSON chunk: ", parseError ,element)
-            return
+            logger.warn("Skipping malformed JSON chunk: ", parseError, element)
           }
-        })
+        }
+
       } catch (error) {
-        console.error("Failed to process the chunk: ", error)
+        logger.error("Failed to process the chunk: ", error)
         onError(error)
       }
     },

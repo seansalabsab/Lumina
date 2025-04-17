@@ -72,11 +72,11 @@ const Chat = () => {
               model={model} 
               setModel={setModel} 
               models={models} 
-              className="flex-1 focus:ring-0 h-12 focus:outline-none"
+              className="flex-1 focus:ring-0 h-10 focus:outline-none"
             />
           
             <Button
-              className={`flex bg-gray-300 text-gray-600 px-4 py-6 
+              className={`flex bg-gray-300 text-gray-600 h-10 p-4 
                 ${isActive ? "bg-cyan-500 text-white": ""}`}
               disabled={!isActive}
               type="submit"

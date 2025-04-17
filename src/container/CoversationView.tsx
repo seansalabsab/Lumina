@@ -3,6 +3,7 @@ import { Conversation, Message } from "@/api/types";
 import MarkdownWithCode from "@/components/custom/MarkdownWithCode";
 import { formatDistanceToNow } from 'date-fns';
 import { Bot } from "lucide-react";
+import { logger } from "@/utils/logger";
 
 type CoversationViewProps = {
   c:Conversation | null
@@ -21,7 +22,7 @@ const MessageView = ({m}:MessageViewProps) => {
     try {
       await navigator.clipboard.writeText(m.content)
     } catch (err){
-      console.error("Failed to copy!", err)
+      logger.error("Failed to copy!", err)
     }
   }
 

@@ -43,7 +43,6 @@ const Completion = () => {
     if (!id && !hasCreatedRef.current) {
       hasCreatedRef.current = true
       const newId = getNewConversation() 
-      console.log(newId)
       navigate(`/completion/${newId}`)
     } else if (id) {
       setCurrentId(id)

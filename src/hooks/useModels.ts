@@ -3,6 +3,7 @@ import React from "react";
 import { LocalModel, RunningModel} from "@/api/types"
 import { usePersistentState } from "@/hooks/usePersistentState"
 import { fetchLocalModels, fetchRunningModels } from "@/api/models";
+import { logger } from "@/utils/logger";
 
 export function useLocalModel(storageKey: string) {
   const [model, setModel] = usePersistentState<LocalModel | null>(storageKey, null); 
@@ -14,10 +15,10 @@ export function useLocalModel(storageKey: string) {
         setModels(ms)
         if (!model && ms.length > 0) {
           setModel(models[0])
-          console.log("the model set to ", models[0].name)
+          logger.log("the model set to ", models[0].name)
         }
       },
-      (err) => console.error(err)
+      (err) => logger.error(err)
     )
   },[])
 
@@ -28,7 +29,7 @@ export function useRunningModel() {
   const refetch = () => {
     fetchRunningModels(
       (ms) => setModels(ms),
-      (err) => console.error(err)
+      (err) => logger.error(err)
     )
   }
 

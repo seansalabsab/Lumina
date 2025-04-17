@@ -5,9 +5,9 @@ import  {Message, Conversation }from "@/api/types";
 import { fetchGenerateCompletionStream } from "@/api/generate-stream";
 import { GenerateCompletionReq } from "@/api/types";
 import { fetchGenerateCompletion } from "@/api/generate";
+import { logger } from "@/utils/logger";
 
 const STORAGE_KEY = "completion-conversations";
-
 
 interface CompletionContextType {
   conversations: Conversation[];
@@ -163,14 +163,8 @@ export const CompletionProvider: React.FC<{children:React.ReactNode}> = ({childr
 
   const handleSubmit = (e:React.FormEvent, model:string) => {
     e.preventDefault()
-    if (input.trim() == "") {
-      console.log("the prompt can't be empty string")
+    if (input.trim() == "" || !model) {
       return
-    }
-
-    if (!model){
-      console.log("useCompletion: the model can not be empty")
-      return 
     }
 
     // add prompt to messages with role user
@@ -182,9 +176,6 @@ export const CompletionProvider: React.FC<{children:React.ReactNode}> = ({childr
       updated_at: Date.now()
     }
 
-
-    // specify the title
-        // feaure reply or Message
     const featuredMessage:Message = {
       content: "",
       creator: model,
@@ -193,9 +184,8 @@ export const CompletionProvider: React.FC<{children:React.ReactNode}> = ({childr
       updated_at: Date.now()
     }
     
-    // let conv = getCurrentConversation()
-    if (true) {
-    // if (conv?.messages.length === 0) {
+    let conv = getCurrentConversation()
+    if (conv?.messages.length === 0) {
       const reqTitle :GenerateCompletionReq = {
         system: "You are a naming assistant. Given a system prompt that describes a tool or AI assistant, generate a short, clear, and creative name that reflects the tool’s purpose. The name must be between 2 to 4 words, relevant to the described function. Respond only with the name. Do not include any explanation or extra text. now name this assistance for following prompt as system input:",
         prompt: system ? system : input,
@@ -212,7 +202,7 @@ export const CompletionProvider: React.FC<{children:React.ReactNode}> = ({childr
           renameConversation(currentId, resp) 
         }
       },
-      (error) => console.log(error)
+      (error) => logger.error(error)
     )
 
     }
@@ -235,8 +225,8 @@ export const CompletionProvider: React.FC<{children:React.ReactNode}> = ({childr
         updateLastAssistantMessage(resp.response)
         if (resp.done) setIsLoading(false)
       },
-      (err) => {
-        console.log(err)
+      (error) => {
+        logger.error(error)
         setIsLoading(false)
       }
     ) 

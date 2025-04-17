@@ -1,6 +1,7 @@
 
 import {RequestMiddleware, ResponseMiddleware} from "@/api/types"
 import { RequestLogger, ResponseLogger } from "./middlewares";
+import { logger } from "@/utils/logger";
 
 const API_BASE_URL = "http://localhost:11434";
 
@@ -62,7 +63,7 @@ class ApiClient {
       return data;
     } catch (error) {
       if (onError) onError(error);
-      console.error("API Error:", error);
+      logger.error("API Error:", error);
     }
   }
 
@@ -105,7 +106,7 @@ class ApiClient {
       }
     } catch (error) {
       if (onError) onError(error);
-      console.error("Streaming API Error:", error);
+      logger.error("Streaming API Error:", error);
     }
   } 
 }

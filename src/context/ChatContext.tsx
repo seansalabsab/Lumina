@@ -5,6 +5,7 @@ import  {Message, Conversation }from "@/api/types";
 import { fetchGenerateChatStream } from "@/api/generate-stream";
 import { GenerateChatReq, GenerateCompletionReq } from "@/api/types";
 import { fetchGenerateCompletion } from "@/api/generate";
+import { logger } from "@/utils/logger";
 
 const STORAGE_KEY = "chat-conversations";
 
@@ -116,14 +117,8 @@ export const ChatProvider: React.FC<{children:React.ReactNode}> = ({children}) =
 
   const handleSubmit = (e:React.FormEvent, model:string) => {
     e.preventDefault()
-    if (input.trim() == "") {
-      console.log("the prompt can't be empty string")
+    if (input.trim() == "" || !model) {
       return
-    }
-
-    if (!model){
-      console.log("useCompletion: the model can not be empty")
-      return 
     }
 
     // add prompt to messages with role user
@@ -135,9 +130,6 @@ export const ChatProvider: React.FC<{children:React.ReactNode}> = ({children}) =
       updated_at: Date.now()
     }
 
-
-    // specify the title
-        // feaure reply or Message
     const featuredMessage:Message = {
       content: "",
       role: "assistant",
@@ -155,17 +147,15 @@ export const ChatProvider: React.FC<{children:React.ReactNode}> = ({children}) =
         stream: false,
       }
 
-
-    fetchGenerateCompletion(
-      reqTitle,
-      (resp) => {
-        if (currentId) {
-          renameConversation(currentId, resp) 
-        }
-      },
-      (error) => console.log(error)
-    )
-
+      fetchGenerateCompletion(
+        reqTitle,
+        (resp) => {
+          if (currentId) {
+            renameConversation(currentId, resp) 
+          }
+        },
+        (error) => logger.log(error)
+      )
     }
 
     const req: GenerateChatReq = {
@@ -186,7 +176,7 @@ export const ChatProvider: React.FC<{children:React.ReactNode}> = ({children}) =
         if (resp.done) setIsLoading(false)
       },
       (err) => {
-        console.log(err)
+        logger.log(err)
         setIsLoading(false)
       }
     ) 
