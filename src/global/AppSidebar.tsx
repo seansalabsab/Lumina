@@ -35,22 +35,23 @@ const AppSidebar = () => {
   const isChat = location.pathname.startsWith("/chat")
   const rootPath = isChat ? "chat" : "completion"
 
-  console.log(isChat, rootPath)
   const {
     conversations, 
     clearConversations, 
-    deleteConversation
+    deleteConversation,
+    getNewConversation,
   } = isChat ? useChat() : useCompletion()
 
   const grouped = groupConversations(conversations)
 
   const handleClearConveration = () => {
     clearConversations()
-    navigate(isChat ? "/chat" : "/completion")
+    handleNewConverstion()
   }
 
   const handleNewConverstion = () => {
-    navigate(isChat ? "/chat": "/completion")
+    const newId = getNewConversation()
+    navigate(`/${rootPath}/${newId}`)
   }
   
   return (

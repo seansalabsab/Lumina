@@ -24,7 +24,7 @@ const Completion = () => {
     handleSubmit,
     isLoading,
     currentConversation,
-    createConversation,
+    getNewConversation,
     setCurrentId,
 
     input,
@@ -39,24 +39,16 @@ const Completion = () => {
   } = useCompletion()
 
   const hasCreatedRef = React.useRef(false)
-
   React.useEffect(() => {
     if (!id && !hasCreatedRef.current) {
-      hasCreatedRef.current = true // block recreate new chat
-      const newId = createConversation("New Completion") 
+      hasCreatedRef.current = true
+      const newId = getNewConversation() 
+      console.log(newId)
       navigate(`/completion/${newId}`)
     } else if (id) {
       setCurrentId(id)
     }
-  },[id])
-
-
-  const messagesEndRef = React.useRef<HTMLDivElement>(null)
-  React.useEffect(() => {
-    if (messagesEndRef.current && currentConversation) {
-      messagesEndRef.current.scrollIntoView({behavior: "smooth"})
-    }
-  }, [currentConversation?.messages])
+  },[id, navigate])
 
   const handleFormSubmit = (e:React.FormEvent) => {
     if (model){
@@ -72,7 +64,6 @@ const Completion = () => {
       <Header />
       <div className="flex-1 overflow-y-auto p-4 space-y-4 max-w-7xl">
         <ConversationView c={currentConversation} />
-        <div ref={messagesEndRef}></div>
       </div>
        
 

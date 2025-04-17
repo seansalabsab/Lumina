@@ -15,7 +15,7 @@ interface CompletionContextType {
   setCurrentId: (id: string) => void;
   addMessageToCurrent: (message: Message) => void;
   updateLastAssistantMessage: (content: string) => void;
-  createConversation: (title?:string) => string;
+  getNewConversation:() => string;
   clearConversations: () => void;
   getCurrentConversation: () => Conversation | null;
   currentConversation: Conversation | null;
@@ -106,23 +106,24 @@ export const CompletionProvider: React.FC<{children:React.ReactNode}> = ({childr
     ) 
   }
 
-  const createConversation = (title = "New Completion"):string => {
-    const id = uuidv4() 
-    const newConv:Conversation = {
-      id,
-      title,
-      messages:[],
-      created_at: Date.now(),
-      updated_at: Date.now(),
-      system :"",
-      temperature: 0.7,
-      seed : "",
+   const getNewConversation = ():string => {
+    // check if currntly have any empty Conversation
+    let emptConv:Conversation = conversations.filter((c:Conversation) => c.messages.length === 0)[0]
+    if (!emptConv) {
+      const id = uuidv4()
+      emptConv = {
+        id,
+        title: "New Converation",
+        messages:[],
+        created_at: Date.now(),
+        updated_at: Date.now(),
+      }
+      setConversations((prev:Conversation[]) => [emptConv, ...prev])
+      setCurrentId(emptConv.id)
     }
-
-    setConversations((prev:Conversation[]) => [newConv, ...prev])
-    setCurrentId(id)
-    return id;
+    return emptConv.id
   }
+
 
   const addMessageToCurrent = (message: Message) => {
     setConversations((prev:Conversation[]) => 
@@ -247,7 +248,7 @@ export const CompletionProvider: React.FC<{children:React.ReactNode}> = ({childr
     setCurrentId,
     addMessageToCurrent,
     updateLastAssistantMessage,
-    createConversation,
+    getNewConversation,
     clearConversations,
     getCurrentConversation,
     deleteConversation,

@@ -21,38 +21,22 @@ const Chat = () => {
     setInput,
     handleSubmit,
     isLoading,
-    createConversation,
+    getNewConversation,
     currentConversation,
     setCurrentId,
   } = useChat()
 
   const hasCreatedRef = React.useRef(false)
-
   React.useEffect(() => {
     if (!id && !hasCreatedRef.current) {
-      hasCreatedRef.current = true // block recreate new chat
-      const newId = createConversation("New Chat") 
+      hasCreatedRef.current = true
+      const newId = getNewConversation() 
       navigate(`/chat/${newId}`)
     } else if (id) {
       setCurrentId(id)
     }
   },[id, navigate])
 
-  const messagesEndRef = React.useRef<HTMLDivElement>(null)
-  React.useEffect(() => {
-    if (messagesEndRef.current && currentConversation) {
-      messagesEndRef.current.scrollIntoView({behavior: "smooth"})
-    }
-  }, [currentConversation?.messages])
-
-
-  React.useEffect(() => {
-    if (id && !currentConversation) {
-      navigate("/chat")
-    }
-  }, [id, currentConversation, navigate])
-
-   
   const handleFormSubmit = (e: React.FormEvent) => {
     if (model){
       handleSubmit(e, model.name);
@@ -71,7 +55,6 @@ const Chat = () => {
       <Header />
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
         <ConversationView c={currentConversation} />
-        <div ref={messagesEndRef}></div>
       </div>
        
 

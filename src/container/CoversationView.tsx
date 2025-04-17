@@ -1,3 +1,4 @@
+import React from "react";
 import { Conversation, Message } from "@/api/types";
 import MarkdownWithCode from "@/components/custom/MarkdownWithCode";
 import { formatDistanceToNow } from 'date-fns';
@@ -43,6 +44,15 @@ const MessageView = ({m}:MessageViewProps) => {
  }
 
 const ConversationView = ({c}:CoversationViewProps) => {
+
+  const messagesEndRef = React.useRef<HTMLLIElement>(null)
+  React.useEffect(() => {
+    if (messagesEndRef.current &&  c && c.messages.length > 0 ) {
+      messagesEndRef.current.scrollIntoView({behavior: "smooth"})
+    }
+  }, [c?.messages])
+
+
   if (!c) {
     return;
   }
@@ -58,6 +68,7 @@ const ConversationView = ({c}:CoversationViewProps) => {
  return (
    <ol className="my-4 flex flex-col h-fit min-h-full gap-8">
       {c.messages.map((message:Message, index) => <MessageView key={index} m={message} />)}
+     <li ref={messagesEndRef}></li> 
     </ol>
 
  ) 
