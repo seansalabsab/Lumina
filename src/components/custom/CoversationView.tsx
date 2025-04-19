@@ -1,14 +1,14 @@
 import React from "react";
 import { Conversation, Message } from "@/api/types";
 import MarkdownWithCode from "@/components/custom/MarkdownWithCode";
+import MarkdownMessage from "./MarkdownMessage";
 import { formatDistanceToNow } from 'date-fns';
-import { Bot } from "lucide-react";
+import { Bot, Copy } from "lucide-react";
 import { logger } from "@/utils/logger";
 
 type CoversationViewProps = {
   c:Conversation | null
 }
-import { Copy } from "lucide-react";
 
 type MessageViewProps = {
   m: Message
@@ -25,6 +25,7 @@ const MessageView = ({m}:MessageViewProps) => {
       logger.error("Failed to copy!", err)
     }
   }
+  console.log(m.content)
 
   return (
     <li className={`border-1 rounded-sm p-4 group`}> 

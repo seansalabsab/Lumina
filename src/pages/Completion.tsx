@@ -61,7 +61,7 @@ const Completion = () => {
   return (
     <div className="flex flex-col h-screen bg-gray-50">
       <Header />
-      <div className="flex-1 overflow-y-auto p-4 bg-red-200">
+      <div className="flex-1 overflow-y-auto p-4">
         <ConversationView c={currentConversation} />
       </div>
        

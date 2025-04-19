@@ -6,6 +6,7 @@ import { fetchGenerateChatStream } from "@/api/generate-stream";
 import { GenerateChatReq, GenerateCompletionReq } from "@/api/types";
 import { fetchGenerateCompletion } from "@/api/generate";
 import { logger } from "@/utils/logger";
+import { removeThinkBlocks } from "@/utils";
 
 const STORAGE_KEY = "chat-conversations";
 
@@ -151,7 +152,9 @@ export const ChatProvider: React.FC<{children:React.ReactNode}> = ({children}) =
         reqTitle,
         (resp) => {
           if (currentId) {
-            renameConversation(currentId, resp) 
+            // exlude <think>..</think>:
+            const title = removeThinkBlocks(resp)
+            renameConversation(currentId, title) 
           }
         },
         (error) => logger.log(error)

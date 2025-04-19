@@ -1,5 +1,35 @@
 import { isToday, isYesterday, subDays } from "date-fns"
 import { Conversation } from "@/api/types"
+import { Content } from "@radix-ui/react-dialog";
+type Content = {
+  text: string;
+  type: "think" | "markdown"
+}
+export const splitTextByContentType = (text:string):Content[] =>  {
+const regex = /<think>([\s\S]*?)<\/think>/g;
+  const parts:Content[] = [];
+  let lastIndex = 0;
+  let match;
+
+  while ((match = regex.exec(text)) !== null) {
+    const [fullMatch, thinkContent] = match;
+    const index = match.index;
+    if (index > lastIndex) {
+      parts.push({ type: "markdown", text: text.slice(lastIndex, index) });
+    }
+    parts.push({ type: "think", text: thinkContent.trim() });
+    lastIndex = index + fullMatch.length;
+  }
+
+  if (lastIndex < text.length) {
+    parts.push({ type: "markdown", text: text.slice(lastIndex) });
+  }
+
+  return parts;
+}
+export const removeThinkBlocks = (text: string) => {
+  return text.replace(/<think>[\s\S]*?<\/think>/g, '');
+};
 
 export enum ConversationGroup {
   TODAY = "Today",
