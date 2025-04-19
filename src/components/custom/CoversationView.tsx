@@ -59,7 +59,7 @@ const ConversationView = ({c}:CoversationViewProps) => {
   }
   if (c.messages.length === 0) {
     return (
-      <div className="flex flex-col min-h-full items-center justify-center text-center p-8 text-muted-foreground">
+      <div className="flex flex-col items-center justify-center text-center p-8 text-muted-foreground h-full">
         <Bot className="h-12 w-12 mb-4 text-cyan-600" />
         <h3 className="text-lg font-medium">No messages yet</h3>
         <p className="text-sm">Start a conversation by typing a message below.</p>
@@ -67,7 +67,7 @@ const ConversationView = ({c}:CoversationViewProps) => {
     )
   }
  return (
-   <ol className="my-4 flex flex-col h-fit min-h-full gap-8">
+   <ol className="my-4 flex flex-col gap-8 mx-auto max-w-7xl">
       {c.messages.map((message:Message, index) => <MessageView key={index} m={message} />)}
      <li ref={messagesEndRef}></li> 
     </ol>

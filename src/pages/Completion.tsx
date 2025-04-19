@@ -8,7 +8,7 @@ import SelectModel from "@/components/custom/SelectModel";
 import { useLocalModel } from "@/hooks/useModels";
 import { useCompletion } from "@/context/CompletionContext";
 import { useNavigate, useParams } from "react-router-dom";
-import ConversationView from "@/container/CoversationView";
+import ConversationView from "@/components/custom/CoversationView";
 import Header from "@/global/AppHeader";
 import { CornerDownLeft } from "lucide-react";
 import { Settings } from "lucide-react";
@@ -61,7 +61,7 @@ const Completion = () => {
   return (
     <div className="flex flex-col h-screen bg-gray-50">
       <Header />
-      <div className="flex-1 overflow-y-auto p-4 space-y-4 max-w-7xl">
+      <div className="flex-1 overflow-y-auto p-4 bg-red-200">
         <ConversationView c={currentConversation} />
       </div>
        

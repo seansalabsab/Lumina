@@ -1,5 +1,7 @@
 
 import { useLocation, useNavigate } from "react-router-dom";
+import { useChat } from "@/context/ChatContext";
+import { useCompletion } from "@/context/CompletionContext";
 import { ROUTES } from "@/constants";
 
 const AppHeader = () => {
@@ -7,9 +9,12 @@ const AppHeader = () => {
   const navigate = useNavigate();
 
   const isActive = (path: string) => location.pathname.startsWith(path);
+  const isChat = location.pathname.startsWith("/chat")
+  const {currentConversation} = isChat ? useChat() : useCompletion()
 
   return (
-    <header className="flex w-full border-b bg-white px-4 py-2">
+    <header className="flex w-full border-b bg-white px-4 py-2 justify-between items-center">
+      <h1>{currentConversation?.title}</h1>
       {ROUTES.map((tab) => (
         <button
           key={tab.path}

@@ -1,8 +1,12 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Bot, Home, AlertCircle } from "lucide-react";
-
+import { useNavigate } from "react-router-dom";
 const NotFoundPage = () => {
+  const naviage = useNavigate()
+  React.useEffect(() => {
+    naviage("/chat")
+  },[])
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-background to-muted p-4 text-center">
       <div className="max-w-md space-y-8">

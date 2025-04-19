@@ -5,7 +5,7 @@ import SelectModel from "@/components/custom/SelectModel";
 import { useLocalModel } from "@/hooks/useModels";
 import { useParams, useNavigate } from "react-router-dom";
 import { useChat } from "@/context/ChatContext";
-import ConversationView from "@/container/CoversationView";
+import ConversationView from "@/components/custom/CoversationView";
 import { Textarea } from "@/components/ui/textarea";
 import Header from "@/global/AppHeader";
 
@@ -53,7 +53,7 @@ const Chat = () => {
   return (
     <div className="flex flex-col h-screen  bg-gray-50">
       <Header />
-      <div className="flex-1 overflow-y-auto p-4 space-y-4">
+      <div className="flex-1 overflow-y-auto p-4">
         <ConversationView c={currentConversation} />
       </div>
        

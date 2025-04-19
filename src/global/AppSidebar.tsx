@@ -58,7 +58,7 @@ const AppSidebar = () => {
    <Sidebar variant="sidebar" collapsible="offcanvas">
       <SidebarHeader className="border-b px-4 py-2 mb-2">
         <div className="flex items-center justify-between">
-          <h2 className="text-lg font-semibold">Conversations</h2>
+          <h2 className="text-lg font-semibold">Lumina</h2>
           <SidebarTrigger />
         </div>
       </SidebarHeader>
