@@ -3,7 +3,7 @@ import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import {Prism as SyntaxHighlighter} from 'react-syntax-highlighter'
 import {atomDark} from 'react-syntax-highlighter/dist/esm/styles/prism'
-import { useClipboard } from "@/hooks/useCipboard";
+import { useClipboard } from "@/hooks/useClipboard";
 import { useSidebar } from "../ui/sidebar";
 
 export const MarkdownView = ({ text}: {text: string}) => {

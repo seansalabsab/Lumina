@@ -3,7 +3,7 @@ import { splitTextByContentType } from "@/utils"
 import MarkdownView from "./MarkdownView"
 import ReasoningView from "./ReasoningView"
 
-const AssisstanMessageView = ({m}:{m:Message}) => {
+const AssistantMessageView = ({m}:{m:Message}) => {
   const parts = splitTextByContentType(m.content)
   return (
     <div>
@@ -19,4 +19,4 @@ const AssisstanMessageView = ({m}:{m:Message}) => {
 }
 
 
-export default AssisstanMessageView;
+export default AssistantMessageView;
