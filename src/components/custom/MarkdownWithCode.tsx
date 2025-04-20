@@ -5,35 +5,48 @@ import {Prism as SyntaxHighlighter} from 'react-syntax-highlighter'
 import {atomDark} from 'react-syntax-highlighter/dist/esm/styles/prism'
 import { useSidebar } from "../ui/sidebar";
 import { logger } from "@/utils/logger";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "../ui/collapsible";
 import { splitTextByContentType } from "@/utils";
-import ThinkView from "./ThinkView";
-
 export const MarkdownWithCode = ({ text }: {text: string}) => {
   const {open} = useSidebar()
-  const contents = splitTextByContentType(text)
+
+  const parts = splitTextByContentType(text)
+  
   return (
     <div>
-      {contents.map((t,index) => {
+      {parts.map((t,index) => {
         if (t.type === "think") {
-         return <ThinkView key={index} text={t.text} /> 
-        }
-        return (
-          <Markdown
+          return (
+            <Collapsible key={index} className="px-5 py-2">
+              <CollapsibleTrigger 
+                className="flex items-center border-1 bg-red-200 rounded-xs w-full"
+              >🧠 Reasoning</CollapsibleTrigger>
+              <CollapsibleContent>
+                <Markdown children={t.text} />
+              </CollapsibleContent>
+            </Collapsible>
+          ) 
+        } else {
+          return (
+            <Markdown
             remarkPlugins={[remarkGfm]}
             children={t.text}
             components={{
-            p({ children }) {
-                  return <p style={{ marginBottom: "1em", lineHeight: "1.6" }}>{children}</p>
-                },
-            ul({ children }) {
-              return <ul style={{ paddingLeft: "1.5em", marginBottom: "1em", listStyleType: "disc" }}>{children}</ul>
-            },
-            ol({ children }) {
-              return <ol style={{ paddingLeft: "1.5em", marginBottom: "1em", listStyleType: "decimal" }}>{children}</ol>
-            },
-            li({ children }) {
-              return <li style={{ marginBottom: "0.5em" }}>{children}</li>
-            },
+              strong({children}){
+                return <strong style={{color: "#88a9cb"}}>{children}</strong>
+              },
+              p({ children }) {
+                return <p style={{ marginBottom: "1em", lineHeight: "1.6" }}>{children}</p>
+              },
+              ul({ children }) {
+                return <ul style={{ paddingLeft: "1.5em", marginBottom: "1em", listStyleType: "disc" }}>{children}</ul>
+              },
+              ol({ children }) {
+                return <ol style={{ paddingLeft: "1.5em", marginBottom: "1em", listStyleType: "decimal" }}>{children}</ol>
+              },
+              li({ children }) {
+                return <li style={{ marginBottom: "0.5em" }}>{children}</li>
+              },
             code(props) {
               const {children, className, node, ...rest} = props
               const match = /language-(\w+)/.exec(className || '')
@@ -124,9 +137,10 @@ export const MarkdownWithCode = ({ text }: {text: string}) => {
           }}
         />
 
-        )
+)
+        }
       })}
-      </div>
+    </div>
   )
 }
 

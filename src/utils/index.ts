@@ -6,23 +6,28 @@ type Content = {
   type: "think" | "markdown"
 }
 export const splitTextByContentType = (text:string):Content[] =>  {
-const regex = /<think>([\s\S]*?)<\/think>/g;
+  let processingText = text
+  if (processingText.includes("<think>") && !processingText.includes("</think>")) {
+    processingText = processingText + "</think>"
+  }
+
+  const regex = /<think>([\s\S]*?)<\/think>/g;
   const parts:Content[] = [];
   let lastIndex = 0;
   let match;
 
-  while ((match = regex.exec(text)) !== null) {
+  while ((match = regex.exec(processingText)) !== null) {
     const [fullMatch, thinkContent] = match;
     const index = match.index;
     if (index > lastIndex) {
-      parts.push({ type: "markdown", text: text.slice(lastIndex, index) });
+      parts.push({ type: "markdown", text: processingText.slice(lastIndex, index) });
     }
     parts.push({ type: "think", text: thinkContent.trim() });
     lastIndex = index + fullMatch.length;
   }
 
-  if (lastIndex < text.length) {
-    parts.push({ type: "markdown", text: text.slice(lastIndex) });
+  if (lastIndex < processingText.length) {
+    parts.push({ type: "markdown", text: processingText.slice(lastIndex) });
   }
 
   return parts;
