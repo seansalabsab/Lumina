@@ -59,21 +59,21 @@ const Completion = () => {
   const isActive = (!isLoading) && (input.trim() !== "") && model 
 
   return (
-    <div className="flex flex-col h-screen bg-gray-50">
+    <div className="flex flex-col h-screen bg-background">
       <Header />
       <div className="flex-1 overflow-y-auto p-4">
         <ConversationView c={currentConversation} />
       </div>
        
 
-      <div className="p-4 border-t bg-white">
+      <div className="p-4 border-t">
         {!showAdvanced ? (
           <form onSubmit={handleFormSubmit} className="flex-col">
             <Textarea
               value={input}
               onChange={(e) => setInput(e.target.value)}
               placeholder="Type your message..."
-              className="flex-1 mb-4 focus-visible:ring-0 min-h-24"
+              className="bg-white flex-1 mb-4 focus-visible:ring-0 min-h-24"
               disabled={isLoading}
             />
             <div className="flex justify-between gap-4">
@@ -114,7 +114,7 @@ const Completion = () => {
               value={system}
               onChange={(e) => setSystem(e.target.value)}
               placeholder="Enter system prompt..."
-              className="flex-1 mb-4 focus-visible:ring-0 min-h-24"
+              className="bg-white flex-1 mb-4 focus-visible:ring-0 min-h-24"
             />
 
             <div className="flex justify-between gap-4 h-10">
@@ -122,6 +122,7 @@ const Completion = () => {
                 type="number"
                 value={seed}
                 onChange={(e) => setSeed(e.target.value)}
+                className="bg-white"
                 placeholder="Enter seed (optional)"
               />
 

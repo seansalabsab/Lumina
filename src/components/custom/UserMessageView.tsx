@@ -1,7 +1,7 @@
 import { Message } from "@/api/types"
 
 const UserMessageView = ({m}:{m:Message}) => {
-  return <div>{m.content}</div>
+  return <div className="bg-background">{m.content}</div>
 }
 
 export default UserMessageView;

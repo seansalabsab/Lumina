@@ -13,7 +13,7 @@ const AppHeader = () => {
   const {currentConversation} = isChat ? useChat() : useCompletion()
 
   return (
-    <header className="flex w-full border-b bg-white px-4 py-2 justify-between items-center">
+    <header className="flex w-full bg-background border-b px-4 py-2 justify-between items-center">
       <h1 className="font-semibold">{currentConversation?.title}</h1>
       {ROUTES.map((tab) => (
         <button

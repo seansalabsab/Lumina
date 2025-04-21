@@ -27,6 +27,7 @@ import { Trash2Icon, MessageSquarePlus } from "lucide-react";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { LuminaLogo } from "@/assets";
 
 const AppSidebar = () => {
   const location = useLocation()
@@ -55,9 +56,10 @@ const AppSidebar = () => {
   }
   
   return (
-   <Sidebar variant="sidebar" collapsible="offcanvas">
+   <Sidebar className="bg-background" variant="sidebar" collapsible="offcanvas">
       <SidebarHeader className="border-b px-4 py-2 mb-2">
         <div className="flex items-center justify-between">
+        <img src={LuminaLogo} />
           <h2 className="text-lg font-semibold">Lumina</h2>
           <SidebarTrigger />
         </div>

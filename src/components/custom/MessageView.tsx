@@ -11,7 +11,7 @@ const MessageView = ({m}:{m:Message}) => {
   const footerString = `${isUser ? "" : m.creator + " ~ " }${friendlyTime}` 
   
   return (
-    <li className={`border-1 rounded-sm p-4 group`}> 
+    <li className={`border-1 rounded-sm p-4 group ${isUser ? "bg-background": "bg-white"}`}> 
       <div className="flex justify-between text-gray-500 font-light">
         <p className="uppercase text-gray-400 px-1.5 py-1 border-gray-300 border-1 rounded-sm text-xs mb-4">{isUser ? "you" : "assistant"}</p>
         <div 

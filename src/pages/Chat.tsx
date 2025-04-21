@@ -51,20 +51,20 @@ const Chat = () => {
 
   
   return (
-    <div className="flex flex-col h-screen  bg-gray-50">
+    <div className="flex flex-col h-screen">
       <Header />
       <div className="flex-1 overflow-y-auto p-4">
         <ConversationView c={currentConversation} />
       </div>
        
 
-      <div className="p-4 border-t bg-white">
+      <div className="p-4 border-t">
         <form onSubmit={handleFormSubmit} className="flex-col">
           <Textarea
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder="Type your message..."
-            className="flex-1 mb-4 focus-visible:ring-0 min-h-24"
+            className="bg-white flex-1 mb-4 focus-visible:ring-0 min-h-24"
             disabled={isLoading}
           />
           <div className="flex justify-between gap-4">
