@@ -3,10 +3,12 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useChat } from "@/context/ChatContext";
 import { useCompletion } from "@/context/CompletionContext";
 import { ROUTES } from "@/constants";
-
+import SidebarButtonTrigger from "@/components/custom/SidebarButtonTrigger";
+import { useSidebar } from "@/components/ui/sidebar";
 const AppHeader = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const {open} = useSidebar()
 
   const isActive = (path: string) => location.pathname.startsWith(path);
   const isChat = location.pathname.startsWith("/chat")
@@ -14,6 +16,7 @@ const AppHeader = () => {
 
   return (
     <header className="flex w-full bg-background border-b px-4 py-2 justify-between items-center">
+      {!open && <SidebarButtonTrigger />}
       <h1 className="font-semibold">{currentConversation?.title}</h1>
       {ROUTES.map((tab) => (
         <button

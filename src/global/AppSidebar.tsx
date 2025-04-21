@@ -28,6 +28,7 @@ import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { LuminaLogo } from "@/assets";
+import SidebarButtonTrigger from "@/components/custom/SidebarButtonTrigger";
 
 const AppSidebar = () => {
   const location = useLocation()
@@ -57,11 +58,13 @@ const AppSidebar = () => {
   
   return (
    <Sidebar className="bg-background" variant="sidebar" collapsible="offcanvas">
-      <SidebarHeader className="border-b px-4 py-2 mb-2">
+      <SidebarHeader className="px-4 py-3 mb-2">
         <div className="flex items-center justify-between">
-        <img src={LuminaLogo} />
-          <h2 className="text-lg font-semibold">Lumina</h2>
-          <SidebarTrigger />
+          <span className="flex gap-1" >
+            <img src={LuminaLogo} />
+            <h2 className="text-lg font-semibold text-cyan-700">Lumina</h2>
+          </span>
+          <SidebarButtonTrigger />
         </div>
       </SidebarHeader>
       <SidebarContent>
@@ -77,7 +80,7 @@ const AppSidebar = () => {
         <ScrollArea className="h-[calc(100vh-13rem)]">
           <SidebarMenu className="p-2">
             {Object.entries(grouped).map(([label,items]) => items.length > 0 && (
-                <div key={label} className="mb-4">
+                <div key={label} className="mb-2">
                   <div className="px-4 py-2 text-sm font-medium text-gray-500">{label}</div> 
                     {items.map((c:Conversation) => {
                       return (
@@ -98,14 +101,14 @@ const AppSidebar = () => {
       </SidebarContent>
       <SidebarFooter className="border-t p-2">
         <AlertDialog>
-          <AlertDialogTrigger asChild>
-            <Button 
-              variant="outline" 
-              className="w-full capitalize text-orange-500 hover:text-orange-600 hover:bg-orange-50"
+          <AlertDialogTrigger >
+            <div 
+            role="button"
+              className="w-full flex justify-center items-center gap-2 cursor-pointer border-1 rounded-md p-1.5 capitalize text-orange-500 hover:text-orange-600 hover:bg-orange-50"
             >
               <Trash2Icon className="!h-4 !w-4" />
               clear all
-            </Button>
+            </div>
           </AlertDialogTrigger>
           <AlertDialogContent>
             <AlertDialogHeader>

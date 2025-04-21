@@ -23,7 +23,7 @@ const SidebarConversationItem = ({
 
   return (
     <SidebarMenuItem key={c.id}>
-      <div className={`flex p-2 text-xs rounded-xs items-center justify-between ${isActive ? "bg-cyan-100 text-cyan-900 font-semibold" :"hover:bg-muted"}`}>
+      <div className={`flex p-2 text-xs rounded-md items-center justify-between ${isActive ? "bg-cyan-100 text-cyan-900 font-semibold" :"hover:bg-muted"}`}>
         <Link 
           to={`${root}/${c.id}`} 
           className="flex flex-col items-start text-nowrap"
