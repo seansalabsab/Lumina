@@ -1,50 +1,51 @@
-# React + TypeScript + Vite
+# Lumina (Ollama Web Client) 
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A lightweight, minimalistic frontend built with React.js for interacting with the Ollama API.
+Designed with minimal dependencies for simplicity, speed, and easy customization.
 
-Currently, two official plugins are available:
+## 🚀 Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Minimal dependecies - build with React only
+- Streamed conversation with Ollama models
+- Clean, Reponsive UI
+- Easy to customize and extend
+- Local-first - no external services needed
 
-## Expanding the ESLint configuration
+## 📸 Screenshot
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+## 🛠️ Tech Stack
 
-- Configure the top-level `parserOptions` property like this:
+- React.js
+- Tailwindcss
+- shadcn/ui
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+## 📦 Getting Started
+
+Clone the repository and install dependecies:
+```bash
+git clone https://github.com/cushydigit/lumina.git
+cd lumina
+npm install
+npm run dev
 ```
+Make sure your Ollama server is running locally (localhost:11434) or update the API URL if needed.
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+## ⚙️ Configuration
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+if your Ollama instance is runnig elsewhere, you could easily edit the API_BASE_URL in ...
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+## 📄 License
+
+This porject is licensed under the MIT License.
+
+## 🙌 Contributing
+
+pull requiest, suggestions, and feedback are welcome!
+
+
+## 🔗 Related Links
+
+- [Ollama Official Repository]
+- [Ollama Documention]
+
+
