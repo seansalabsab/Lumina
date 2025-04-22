@@ -1,4 +1,6 @@
-# ![lumina](./src/assets/lumina.svg) Lumina (Ollama Web Client) 
+<h1 align="center">
+    <img src="./src/assets/lumina.svg" alt="lumina" > Lumina (Ollama Web Client) 
+</h1>
 <p align="center">
   <a href="https://github.com/your-username/ollama-web-client/blob/main/LICENSE">
     <img src="https://img.shields.io/badge/license-MIT-green.svg" alt="License MIT">
