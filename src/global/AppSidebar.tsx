@@ -23,8 +23,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { groupConversations } from "@/utils";
 import SidebarConversationItem from "@/components/custom/SidbarConversationItem";
 import { useCompletion } from "@/context/CompletionContext";
-import { Trash2Icon, MessageSquarePlus } from "lucide-react";
-import { SidebarTrigger } from "@/components/ui/sidebar";
+import { Trash2Icon, MessageSquarePlus, Sparkles, MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { LuminaLogo } from "@/assets";
@@ -71,10 +70,20 @@ const AppSidebar = () => {
         <div className="p-2">
           <Button
             className="w-full bg-cyan-600 hover:bg-cyan-700 text-white"
+            onClick={isChat ? () => navigate("/completion") : () => navigate("/chat")}
+          >
+            {isChat ? <Sparkles className="h-4 w-4" /> : <MessageSquare /> } 
+            Go to {isChat ? "Completion": "Chat"}
+          </Button>
+        </div>
+
+        <div className="p-2">
+          <Button
+            className="w-full bg-teal-600 hover:bg-teal-700 text-white"
             onClick={handleNewConverstion}
           >
             <MessageSquarePlus className="h-4 w-4" />
-            New conversation
+            New {isChat ? "Chat" : "Completion"} 
           </Button>
         </div>
         <ScrollArea className="h-[calc(100vh-13rem)]">

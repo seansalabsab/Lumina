@@ -3,7 +3,7 @@ import { Conversation, Message } from "@/api/types";
 import { Bot} from "lucide-react";
 import MessageView from "./MessageView";
 
-const ConversationView = ({c}:{c:Conversation}) => {
+const ConversationView = ({c}:{c:Conversation | null}) => {
 
   const messagesEndRef = React.useRef<HTMLLIElement>(null)
   React.useEffect(() => {

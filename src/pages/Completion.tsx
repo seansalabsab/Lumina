@@ -73,7 +73,7 @@ const Completion = () => {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               placeholder="Type your message..."
-              className="bg-white flex-1 mb-4 focus-visible:ring-0 min-h-24"
+              className="bg-white flex-1 mb-4 min-h-24"
               disabled={isLoading}
             />
             <div className="flex justify-between gap-4">
@@ -114,7 +114,7 @@ const Completion = () => {
               value={system}
               onChange={(e) => setSystem(e.target.value)}
               placeholder="Enter system prompt..."
-              className="bg-white flex-1 mb-4 focus-visible:ring-0 min-h-24"
+              className="bg-white flex-1 mb-4 min-h-24"
             />
 
             <div className="flex justify-between gap-4 h-10">
