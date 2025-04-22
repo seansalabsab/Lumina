@@ -11,11 +11,19 @@ Designed with minimal dependencies for simplicity, speed, and easy customization
 
 - Minimal dependecies - build with React only
 - Streamed conversation with Ollama models
+- Persistant Converstaion with models
+- Markdown rendering with syntax highlighting
+- Support Two modes Chat and Completion
+- Copy code blocks or entire messsage
+- Auto Title Genreation for Conversations
+- Exlusive Reasoning Component
 - Clean, Reponsive UI
 - Easy to customize and extend
 - Local-first - no external services needed
 
 ## 📸 Screenshot
+
+![App Screenshot](./src/assets/lumina-screenshot-1.png)
 
 ## 🛠️ Tech Stack
 
@@ -49,7 +57,8 @@ pull requiest, suggestions, and feedback are welcome!
 
 ## 🔗 Related Links
 
-- [Ollama Official Repository]
-- [Ollama Documention]
+- [Ollama Official Website](https://ollama.com/)
+- [Ollama Official Repository](https://github.com/ollama/ollama)
+- [Ollama Developement Documention](https://github.com/ollama/ollama/blob/main/docs/development.md)
 
 
