@@ -1,11 +1,18 @@
 # ![lumina](./src/assets/lumina.svg) Lumina (Ollama Web Client) 
 <p align="center">
-![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)
-![React](https://img.shields.io/badge/React-18+-blue)
-![Status: Active](https://img.shields.io/badge/Status-Active-brightgreen)
+  <a href="https://github.com/your-username/ollama-web-client/blob/main/LICENSE">
+    <img src="https://img.shields.io/badge/license-MIT-green.svg" alt="License MIT">
+  </a>
+  <img src="https://img.shields.io/badge/React-18+-blue.svg" alt="React 18+">
+  <img src="https://img.shields.io/badge/Status-Active-brightgreen.svg" alt="Project Status">
+  <a href="https://github.com/ollama/ollama">
+    <img src="https://img.shields.io/badge/Built%20for-Ollama-blueviolet.svg" alt="Built for Ollama">
+  </a>
 </p>
+<p align="center">
 A lightweight, minimalistic frontend built with React.js for interacting with the Ollama API.
 Designed with minimal dependencies for simplicity, speed, and easy customization.
+</p>
 
 ## 🚀 Features
 
