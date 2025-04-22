@@ -1,3 +1,7 @@
+![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)
+![React](https://img.shields.io/badge/React-18+-blue)
+![Status: Active](https://img.shields.io/badge/Status-Active-brightgreen)
+
 # Lumina (Ollama Web Client) 
 
 A lightweight, minimalistic frontend built with React.js for interacting with the Ollama API.
