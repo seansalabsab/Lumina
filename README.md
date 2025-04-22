@@ -1,3 +1,4 @@
+![log](./src/assets/lumina.svg)
 ![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)
 ![React](https://img.shields.io/badge/React-18+-blue)
 ![Status: Active](https://img.shields.io/badge/Status-Active-brightgreen)
@@ -24,6 +25,7 @@ Designed with minimal dependencies for simplicity, speed, and easy customization
 ## 📸 Screenshot
 
 ![App Screenshot](./src/assets/lumina-screenshot-1.png)
+![App Screenshot](./src/assets/lumina-screenshot-4.png)
 
 ## 🛠️ Tech Stack
 
@@ -40,6 +42,16 @@ cd lumina
 npm install
 npm run dev
 ```
+or easier way to use [lumina](https://github.com/cushydigit/lumina) with docker
+build docker image
+```bash
+docker build -t lumina .
+```
+run lumina image on container
+```bashe
+docker run =p 4173:4173 lumina
+```
+
 Make sure your Ollama server is running locally (localhost:11434) or update the API URL if needed.
 
 ## ⚙️ Configuration
