@@ -8,6 +8,8 @@ import io
 import os
 import traceback
 import google.generativeai as genai
+import requests  # Added missing import
+
 
 # Set up Google Gemini API
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY", "AIzaSyDHeTsSX7r3Xy46SYlJA9lHgc_Hmb_ZAq0")
@@ -16,6 +18,7 @@ genai.configure(api_key=GOOGLE_API_KEY)
 # Initialize the Flask app for plant identification
 plant_identification_app = Flask(__name__)
 CORS(plant_identification_app)  # Enable CORS for all routes
+
 
 # Paths for the model
 PLANT_MODEL_PATH = os.path.join(os.path.dirname(__file__), "model", "plant_identification_model.h5")
@@ -169,6 +172,69 @@ def plant_info(plant_name):
         print(f"❌ Error in /plant-info route: {str(e)}")
         print(traceback.format_exc())
         return jsonify({"status": "error", "message": f"Failed to get plant information: {str(e)}"}), 500
+
+# Improved plant assistant route using Gemini API directly
+@plant_identification_app.route("/plant-assistant", methods=["POST"])
+def plant_assistant():
+    try:
+        print("✅ Received plant assistant request")
+        data = request.json
+        prompt = data.get("prompt", "")
+        
+        if not prompt:
+            return jsonify({"error": "No prompt provided"}), 400
+            
+        print(f"✅ Processing plant assistant prompt: {prompt}")
+        
+        # Try to use Ollama if available (with proper error handling)
+        try:
+            print("✅ Attempting to use Ollama API...")
+            ollama_response = requests.post(
+                "http://localhost:11434/api/generate",
+                json={
+                    "model": os.getenv("OLLAMA_MODEL", "llama3:8b"),
+                    "prompt": prompt,
+                    "system": "You are a botanical expert providing plant care advice. Be concise, practical, and helpful.",
+                    "stream": False
+                },
+                timeout=5  # Shorter timeout for faster fallback
+            )
+            
+            if ollama_response.status_code == 200:
+                response_data = ollama_response.json()
+                response_text = response_data.get("response", "")
+                print(f"✅ Successfully got response from Ollama")
+                return jsonify({"response": response_text})
+            else:
+                print(f"❌ Ollama returned non-200 status code: {ollama_response.status_code}")
+                # Will fall through to Gemini
+        except requests.exceptions.RequestException as e:
+            print(f"❌ Ollama request failed: {str(e)}")
+            # Will fall through to Gemini
+        except Exception as e:
+            print(f"❌ Unexpected error with Ollama: {str(e)}")
+            # Will fall through to Gemini
+        
+        # Fallback to Gemini
+        print("✅ Using Gemini API for plant assistant...")
+        system_prompt = """You are a helpful plant assistant for the BotaniSnap app. 
+        Answer questions about plant identification, care requirements, and gardening. 
+        Be friendly, concise, and helpful. If you don't know the answer, suggest taking a photo 
+        of the plant using BotaniSnap's identification feature."""
+        
+        # Combine system prompt with user prompt
+        combined_prompt = f"{system_prompt}\n\nUser: {prompt}\n\nAssistant:"
+        
+        model = genai.GenerativeModel("gemini-2.0-flash")
+        response = model.generate_content(combined_prompt)
+        print(f"✅ Successfully got response from Gemini")
+        
+        return jsonify({"response": response.text})
+        
+    except Exception as e:
+        print(f"❌ Error in /plant-assistant route: {str(e)}")
+        print(traceback.format_exc())
+        return jsonify({"response": f"I'm sorry, I'm having trouble connecting to the plant assistant service right now. Please try again later."}), 200
 
 # Additional route to list all supported plants
 @plant_identification_app.route("/plants", methods=["GET"])

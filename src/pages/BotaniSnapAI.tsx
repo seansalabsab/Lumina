@@ -1,5 +1,6 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
+import { MessageCircle, X, Send, Camera, RefreshCw } from "lucide-react";
 
 type PlantInfo = {
   status: string;
@@ -18,14 +19,65 @@ type Prediction = {
   plant_info: PlantInfo;
 };
 
+type Message = {
+  id: string;
+  text: string;
+  sender: "assistant" | "user";
+  timestamp: Date;
+};
+
 function BotaniSnap() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const [prediction, setPrediction] = useState<Prediction | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  
+  // Assistant related states
+  const [showAssistant, setShowAssistant] = useState(false);
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [currentMessage, setCurrentMessage] = useState("");
+  const [assistantTyping, setAssistantTyping] = useState(false);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  // Initial welcome message from assistant
+  useEffect(() => {
+    if (messages.length === 0) {
+      setMessages([
+        {
+          id: "welcome",
+          text: "👋 Hi there! I'm your BotaniSnap assistant. Need help identifying or caring for plants? Just upload a photo or ask me a question!",
+          sender: "assistant",
+          timestamp: new Date()
+        }
+      ]);
+    }
+  }, []);
+
+  // Auto-scroll to bottom of messages
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+
+  // Update assistant messages when file is selected or prediction changes
+  useEffect(() => {
+    if (selectedFile && !preview) {
+      // Do nothing until preview is ready
+    } else if (selectedFile && preview && !prediction && !loading) {
+      sendAssistantMessage("Great photo! Click 'Identify Plant' to analyze it. For best results, make sure the plant is clearly visible and well-lit.");
+    } else if (loading) {
+      sendAssistantMessage("I'm analyzing your plant image now. This should only take a moment...");
+    } else if (prediction) {
+      const confidence = prediction.accuracy;
+      if (confidence < 70) {
+        sendAssistantMessage("I'm not entirely confident about this identification. Could you try taking another photo with better lighting and a clearer view of the plant?");
+      } else {
+        sendAssistantMessage(`I've identified this as ${prediction.predicted_plant} with ${confidence.toFixed(1)}% confidence. You can see care information on the right. Any questions about this plant?`);
+      }
+    }
+  }, [selectedFile, preview, prediction, loading]);
 
   const resizeImage = async (file: File, maxWidth = 1280, maxHeight = 720) => {
     return new Promise<File>((resolve, reject) => {
@@ -80,12 +132,15 @@ function BotaniSnap() {
       setPreview(URL.createObjectURL(file));
       setPrediction(null);
       setError(null);
+      
+      sendUserMessage(`I've uploaded a photo: ${file.name}`);
     }
   };
 
   const handleUpload = async () => {
     if (!selectedFile) {
       setError("Please select an image first.");
+      sendAssistantMessage("You'll need to select an image first. Click the 'Choose a photo' button to upload a plant image.");
       return;
     }
     setLoading(true);
@@ -96,16 +151,12 @@ function BotaniSnap() {
       const formData = new FormData();
       formData.append("file", resizedFile);
 
-      console.log("✅ Sending file to API:", resizedFile);
-
       const response = await axios.post("http://localhost:5001/predict", formData, {
         headers: { 
           "Content-Type": "multipart/form-data",
         },
         timeout: 30000
       });
-
-      console.log("✅ Prediction response:", response.data);
       
       if (response.data && response.data.predicted_plant) {
         setPrediction(response.data);
@@ -116,10 +167,13 @@ function BotaniSnap() {
       console.error("❌ Upload error:", err);
       if (err.code === 'ECONNREFUSED') {
         setError("Cannot connect to the plant identification server. Please make sure the server is running on port 5001.");
+        sendAssistantMessage("I'm having trouble connecting to the plant identification server. Please make sure the server is running on port 5001.");
       } else if (err.response?.status === 500) {
         setError("Server error occurred. Please try again with a different image.");
+        sendAssistantMessage("There was a server error processing your image. Could you try again with a different photo?");
       } else {
         setError(`Failed to identify plant: ${err.message || "Please try again."}`);
+        sendAssistantMessage("I wasn't able to identify your plant. This might be because the image isn't clear enough. Try taking another photo with good lighting and a clear view of the leaves and any flowers.");
       }
     } finally {
       setLoading(false);
@@ -153,6 +207,63 @@ function BotaniSnap() {
     setPreview(null);
     setPrediction(null);
     setError(null);
+    
+    sendUserMessage("I want to upload a new photo");
+    sendAssistantMessage("Great! Click 'Choose a photo' to upload a new plant image.");
+  };
+  
+  // Assistant functions
+  const sendUserMessage = (text: string) => {
+    const newMessage = {
+      id: `user-${Date.now()}`,
+      text,
+      sender: "user" as const,
+      timestamp: new Date()
+    };
+    setMessages(prev => [...prev, newMessage]);
+  };
+  
+  const sendAssistantMessage = (text: string) => {
+    setAssistantTyping(true);
+    
+    // Simulate typing delay for more natural feel
+    setTimeout(() => {
+      const newMessage = {
+        id: `assistant-${Date.now()}`,
+        text,
+        sender: "assistant" as const,
+        timestamp: new Date()
+      };
+      setMessages(prev => [...prev, newMessage]);
+      setAssistantTyping(false);
+    }, 1000);
+  };
+  
+  const handleSendMessage = async () => {
+    if (!currentMessage.trim()) return;
+    
+    const userMessage = currentMessage;
+    setCurrentMessage("");
+    sendUserMessage(userMessage);
+    setAssistantTyping(true);
+    
+    try {
+      // Use plant-assistant endpoint to get response from Gemini API
+      const response = await axios.post("http://localhost:5001/plant-assistant", {
+        prompt: `User question about plants: ${userMessage}`,
+      });
+      
+      if (response.data && response.data.response) {
+        sendAssistantMessage(response.data.response);
+      } else {
+        throw new Error("Invalid response from assistant API");
+      }
+    } catch (err: any) {
+      console.error("❌ Assistant error:", err);
+      sendAssistantMessage("I'm sorry, I'm having trouble connecting to the plant assistant service. You can still upload and identify plants though!");
+    } finally {
+      setAssistantTyping(false);
+    }
   };
 
   return (
@@ -160,7 +271,8 @@ function BotaniSnap() {
       maxWidth: '1200px', 
       margin: '0 auto', 
       padding: '20px',
-      fontFamily: 'Arial, sans-serif'
+      fontFamily: 'Arial, sans-serif',
+      position: 'relative'
     }}>
       {/* Header */}
       <div style={{ textAlign: 'center', marginBottom: '40px' }}>
@@ -190,10 +302,10 @@ function BotaniSnap() {
       }}>
         {/* Upload Section */}
         <div style={{ 
-          backgroundColor: '#02c55a',
+          backgroundColor: '#f5f5f5',
           padding: '30px',
           borderRadius: '12px',
-          border: '2px dashed #ddd'
+          border: '2px solid #02c55a'
         }}>
           <label style={{ 
             display: 'block',
@@ -208,7 +320,7 @@ function BotaniSnap() {
             />
             <div style={{
               padding: '20px',
-              backgroundColor: '#005326',
+              backgroundColor: '#02c55a',
               color: 'white',
               borderRadius: '8px',
               fontSize: '1.1rem',
@@ -222,12 +334,15 @@ function BotaniSnap() {
           {preview && (
             <div style={{ 
               marginTop: '20px',
-              textAlign: 'center'
+              display: 'flex', 
+              justifyContent: 'center',  // centers horizontally
+              alignItems: 'center',  
             }}>
               <img 
                 src={preview} 
                 alt="preview" 
                 style={{ 
+                  alignItems: 'center',
                   maxWidth: '100%',
                   maxHeight: '300px',
                   borderRadius: '8px',
@@ -250,7 +365,7 @@ function BotaniSnap() {
                   disabled={loading}
                   style={{
                     padding: '12px 24px',
-                    backgroundColor: loading ? '#ccc' : '#005326 ',
+                    backgroundColor: loading ? '#ccc' : '#02c55a',
                     color: 'white',
                     border: 'none',
                     borderRadius: '6px',
@@ -304,9 +419,8 @@ function BotaniSnap() {
                 width: '40px',
                 height: '40px',
                 border: '4px solid #f3f3f3',
-                borderTop: '4px solid #4CAF50',
+                borderTop: '4px solid #02c55a',
                 borderRadius: '50%',
-                animation: 'spin 1s linear infinite',
                 margin: '0 auto 15px'
               }}></div>
               <p style={{ 
@@ -325,6 +439,28 @@ function BotaniSnap() {
               </style>
             </div>
           )}
+          
+          {/* Tips section */}
+          <div style={{
+            marginTop: '30px',
+            padding: '15px',
+            backgroundColor: '#e8f5e9',
+            borderRadius: '8px',
+            border: '1px solid #c8e6c9'
+          }}>
+            <h4 style={{ margin: '0 0 10px 0', color: '#2d5016' }}>📸 Photo Tips:</h4>
+            <ul style={{ 
+              margin: '0', 
+              paddingLeft: '20px',
+              color: '#2d5016',
+              fontSize: '0.95rem'
+            }}>
+              <li>Take close-up shots of leaves and flowers</li>
+              <li>Use natural lighting when possible</li>
+              <li>Capture multiple parts of the plant for better identification</li>
+              <li>Make sure the plant is in focus</li>
+            </ul>
+          </div>
         </div>
 
         {/* Results Section */}
@@ -488,6 +624,201 @@ function BotaniSnap() {
           </div>
         )}
       </div>
+
+      {/* Assistant Chat Button */}
+      <div style={{
+        position: 'fixed',
+        bottom: '20px',
+        right: '20px',
+        zIndex: 1000
+      }}>
+        <button 
+          onClick={() => setShowAssistant(!showAssistant)}
+          style={{
+            width: '60px',
+            height: '60px',
+            borderRadius: '50%',
+            backgroundColor: '#02c55a',
+            color: 'white',
+            border: 'none',
+            boxShadow: '0 4px 8px rgba(0,0,0,0.2)',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontSize: '24px'
+          }}
+        >
+          {showAssistant ? <X size={24} /> : <MessageCircle size={24} />}
+        </button>
+      </div>
+      
+      {/* Assistant Chat Panel */}
+      {showAssistant && (
+        <div style={{
+          position: 'fixed',
+          bottom: '90px',
+          right: '20px',
+          width: '350px',
+          height: '500px',
+          backgroundColor: 'white',
+          borderRadius: '12px',
+          boxShadow: '0 4px 20px rgba(0,0,0,0.15)',
+          display: 'flex',
+          flexDirection: 'column',
+          overflow: 'hidden',
+          zIndex: 999,
+          border: '1px solid #ddd'
+        }}>
+          {/* Chat Header */}
+          <div style={{
+            backgroundColor: '#02c55a',
+            color: 'white',
+            padding: '15px',
+            fontWeight: 'bold',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center'
+          }}>
+            <span>🌿 BotaniSnap Assistant</span>
+            <button 
+              onClick={() => setShowAssistant(false)}
+              style={{
+                background: 'none',
+                border: 'none',
+                color: 'white',
+                cursor: 'pointer',
+                padding: '0'
+              }}
+            >
+              <X size={20} />
+            </button>
+          </div>
+          
+          {/* Messages Container */}
+          <div style={{
+            flex: 1,
+            overflowY: 'auto',
+            padding: '15px',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '10px',
+            backgroundColor: '#f9f9f9'
+          }}>
+            {messages.map(message => (
+              <div 
+              key={message.id}
+              style={{
+                alignSelf: message.sender === 'user' ? 'flex-end' : 'flex-start',
+                backgroundColor: message.sender === 'user' ? '#e2f7e8' : 'white',
+                color: message.sender === 'user' ? 'black' : '#007700', // example: dark green for bot text
+                padding: '10px 15px',
+                borderRadius: message.sender === 'user' ? '18px 18px 0 18px' : '18px 18px 18px 0',
+                maxWidth: '80%'
+              }}
+            >
+              {message.text}
+            </div>
+            
+            ))}
+            {assistantTyping && (
+              <div style={{
+                alignSelf: 'flex-start',
+                backgroundColor: 'white',
+                padding: '15px',
+                borderRadius: '18px 18px 18px 0',
+                maxWidth: '80%',
+                boxShadow: '0 1px 2px rgba(0,0,0,0.1)',
+                border: '1px solid #e0e0e0'
+              }}>
+                <div style={{
+                  display: 'flex',
+                  gap: '4px',
+                  alignItems: 'center'
+                }}>
+                  <div style={{
+                    width: '8px',
+                    height: '8px',
+                    borderRadius: '50%',
+                    backgroundColor: '#02c55a',
+                    animation: 'pulse 1s infinite',
+                    animationDelay: '0s'
+                  }}></div>
+                  <div style={{
+                    width: '8px',
+                    height: '8px',
+                    borderRadius: '50%',
+                    backgroundColor: '#02c55a',
+                    animation: 'pulse 1s infinite',
+                    animationDelay: '0.3s'
+                  }}></div>
+                  <div style={{
+                    width: '8px',
+                    height: '8px',
+                    borderRadius: '50%',
+                    backgroundColor: '#02c55a',
+                    animation: 'pulse 1s infinite',
+                    animationDelay: '0.6s'
+                  }}></div>
+                </div>
+                <style>
+                  {`
+                    @keyframes pulse {
+                      0% { opacity: 0.4; }
+                      50% { opacity: 1; }
+                      100% { opacity: 0.4; }
+                    }
+                  `}
+                </style>
+              </div>
+            )}
+            <div ref={messagesEndRef} />
+          </div>
+          
+          {/* Input Area */}
+          <div style={{
+            borderTop: '1px solid #eee',
+            padding: '15px',
+            display: 'flex',
+            gap: '10px',
+            backgroundColor: 'white'
+          }}>
+            <input
+              type="text"
+              value={currentMessage}
+              onChange={(e) => setCurrentMessage(e.target.value)}
+              onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
+              placeholder="Ask about plants or upload help..."
+              style={{
+                flex: 1,
+                padding: '10px 15px',
+                borderRadius: '20px',
+                border: '1px solid #ddd',
+                outline: 'none',
+                color: '#007700' ,
+                fontSize: '0.95rem'
+              }}
+            />
+            <button
+              onClick={handleSendMessage}
+              disabled={!currentMessage.trim()}
+              style={{
+                backgroundColor: currentMessage.trim() ? '#02c55a' : '#ccc',
+                border: 'none',
+                borderRadius: '50%',
+                width: '40px',
+                height: '40px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: currentMessage.trim() ? 'pointer' : 'not-allowed'
+              }}
+            >
+              <Send size={18} color="white" />
+            </button>
+          </div>
+        </div>
+      )}
 
       <canvas ref={canvasRef} style={{ display: "none" }} />
     </div>
