@@ -26,7 +26,7 @@ import { useCompletion } from "@/context/CompletionContext";
 import { Trash2Icon, MessageSquarePlus, Sparkles, MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { LuminaLogo } from "@/assets";
+
 import SidebarButtonTrigger from "@/components/custom/SidebarButtonTrigger";
 
 const AppSidebar = () => {
@@ -60,8 +60,12 @@ const AppSidebar = () => {
       <SidebarHeader className="px-4 py-3 mb-2">
         <div className="flex items-center justify-between">
           <span className="flex gap-1" >
-            <img src={LuminaLogo} />
-            <h2 className="text-lg font-semibold text-cyan-700">Lumina</h2>
+             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+                <img src="/logo.png" alt="Lumina Logo" width="60" height="60" />
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+            <h2 className="text-lg font-semibold text-green-400">BotaniSnap-AI</h2>
+            </div>
           </span>
           <SidebarButtonTrigger />
         </div>
@@ -77,6 +81,16 @@ const AppSidebar = () => {
           </Button>
         </div>
 
+                <div className="p-2">
+          <Button
+            className="w-full bg-green-600 hover:bg-green-700 text-white"
+            onClick={() => navigate("/botanisnapai")}
+          >
+            <Sparkles className="h-4 w-4" />
+            Go to BotaniSnap-AI
+          </Button>
+        </div>
+
         <div className="p-2">
           <Button
             className="w-full bg-teal-600 hover:bg-teal-700 text-white"
@@ -86,6 +100,8 @@ const AppSidebar = () => {
             New {isChat ? "Chat" : "Completion"} 
           </Button>
         </div>
+
+
         <ScrollArea className="h-[calc(100vh-13rem)]">
           <SidebarMenu className="p-2">
             {Object.entries(grouped).map(([label,items]) => items.length > 0 && (
